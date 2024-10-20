@@ -1,4 +1,4 @@
-# 124 Cuộc thi MLP - Lê Thanh Tuấn - 21115053120158
+# 124 MLP Competition - Lê Thanh Tuấn - 21115053120158
 
 ## Tổng quan
 
