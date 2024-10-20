@@ -2,7 +2,7 @@
 
 ## Tổng quan
 
-## Xây dựng một mô hình dự đoán giá nhà ở thành phố Bắc Kinh, Trung Quốc.
+Xây dựng một mô hình dự đoán giá nhà ở thành phố Bắc Kinh, Trung Quốc.
 
 ## Các bước thực hiện
 
