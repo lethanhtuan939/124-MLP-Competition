@@ -155,11 +155,16 @@ Xây dựng một mạng MLP dự đoán giá nhà ở thành phố Bắc Kinh, 
 
 - Sử dụng **RandomForestRegressor**:
 
-  - Số lượng cây quyết định (`n_estimators`) được đặt thành 500.
-  - Độ sâu tối đa (`max_depth`) của cây là 15.
-  - Chia nhánh tối thiểu của mẫu (`min_samples_split`) là 5, và số lượng mẫu tối thiểu của mỗi lá cây (`min_samples_leaf`) là 2.
+  - Số lượng cây quyết định (`n_estimators`) được đặt thành 300.
+  - Độ sâu tối đa (`max_depth`) của cây là 20.
+  - Chia nhánh tối thiểu của mẫu (`min_samples_split`) là 10, và số lượng mẫu tối thiểu của mỗi lá cây (`min_samples_leaf`) là 5.
 
-#### 3.2 Đánh giá mô hình
+#### 3.2 Sử dụng mô hình RandomForest để tạo các đặc trưng mới
+
+- Dự đoán trên tập huấn luyện (`X_train_split`) và tập validation (`X_val_split`) để lấy các giá trị dự đoán và dùng chúng như một đặc trưng mới cho mô hình MLP.
+- Kết quả dự đoán từ mô hình RandomForest sẽ được thêm vào `X_train_split`, `X_val_split` và `X_test_scaled`.
+
+#### 3.3 Đánh giá mô hình
 
 - Để đánh giá hiệu suất của mô hình, sử dụng [**RMSE**](https://statisticsbyjim.com/regression/root-mean-square-error-rmse/)
   ```python
@@ -171,14 +176,27 @@ Xây dựng một mạng MLP dự đoán giá nhà ở thành phố Bắc Kinh, 
 
 ### 4. Dự đoán kết quả
 
-- Huấn luyện mô hình MLP trên **RandomForest**
+#### 4.1 Huấn luyện MLP Model với đặc trưng từ RandomForest
 
-  ```python
-  rf_model, val_rmse = train_random_forest(X_train_split y_train_split, X_val_split, y_val_split)
-  ```
+- Xây dựng và huấn luyện mô hình MLP dựa trên các đặc trưng gốc và đặc trưng từ mô hình `RandomForest`.
 
-- Sau đó dự đoán dựa trên kết quả học được từ **RandomForest**
+```
+mlp_model = build_mlp_model(X_train_split_with_rf.shape[1])
+mlp_model = compile_and_train_mlp(mlp_model, X_train_split_with_rf, y_train_split, X_val_split_with_rf, y_val_split)
+```
 
-  ```python
-  y_pred_test = rf_model.predict(X_test_scaled)
-  ```
+#### 4.2 Dự đoán kết quả với MLP Model
+
+- Sử dụng mô hình MLP đã huấn luyện để dự đoán trên tập kiểm định và tính `RMSE`.
+
+```
+y_pred_val_mlp = mlp_model.predict(X_val_split_with_rf).flatten()
+mlp_rmse = print_rmse(y_val_split, y_pred_val_mlp, model_name="MLP with RF Feature")
+```
+
+- Tiến hành dự đoán trên tập test và lưu kết quả vào file `Latest_submission.csv`.
+
+```
+y_pred_test_mlp = mlp_model.predict(X_test_with_rf).flatten()
+save_submission(y_pred_test_mlp, test_ids, filename='Latest_submission.csv')
+```
