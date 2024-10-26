@@ -159,10 +159,21 @@ Xây dựng một mạng MLP dự đoán giá nhà ở thành phố Bắc Kinh, 
   - Độ sâu tối đa (`max_depth`) của cây là 20.
   - Chia nhánh tối thiểu của mẫu (`min_samples_split`) là 10, và số lượng mẫu tối thiểu của mỗi lá cây (`min_samples_leaf`) là 5.
 
+  ```
+  rf_model, rf_rmse = train_random_forest(X_train_split, y_train_split, X_val_split, y_val_split)
+  ```
+
 #### 3.2 Sử dụng mô hình RandomForest để tạo các đặc trưng mới
 
 - Dự đoán trên tập huấn luyện (`X_train_split`) và tập validation (`X_val_split`) để lấy các giá trị dự đoán và dùng chúng như một đặc trưng mới cho mô hình MLP.
-- Kết quả dự đoán từ mô hình RandomForest sẽ được thêm vào `X_train_split`, `X_val_split` và `X_test_scaled`.
+
+- Ghép các dự đoán vào tập huấn luyện và validation
+
+  ```
+  X_train_split_with_rf = np.hstack((X_train_split, rf_train_predictions))
+  X_val_split_with_rf = np.hstack((X_val_split, rf_val_predictions))
+  X_test_with_rf = np.hstack((X_test_scaled, rf_test_predictions))
+  ```
 
 #### 3.3 Đánh giá mô hình
 
